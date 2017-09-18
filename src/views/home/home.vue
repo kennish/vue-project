@@ -10,7 +10,7 @@
         <h2>欢迎来到赢家生活金融平台</h2>
         <div class="home-bnt-bar">
           <router-link to="/" class="home-bnt">
-            <Button type="primary" size="large">进入后台</Button>
+            <Button type="primary" size="large">进入后台1</Button>
           </router-link>
         </div>
       </div>
