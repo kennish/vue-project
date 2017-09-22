@@ -87,7 +87,12 @@
                 menuList: []
             }
         },
-         created () {
+        watch:{
+            $route(){
+                console.log(this.$route)
+            }
+        },
+        created () {
             let info = this.$local.fetch("innjia");
             this.userName = info.userName;
 
@@ -101,7 +106,7 @@
             .catch((response) => {
                 console.log(response)
             })
-            
+            console.log(this.$route)
         },
         computed: {
             iconSize () {
