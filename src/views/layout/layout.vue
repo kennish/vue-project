@@ -65,7 +65,9 @@
                 </div>
                 <div class="layout-content">
                     <div class="layout-content-main">
-                        <router-view></router-view>
+                        <transition name="fade" mode="out-in">
+                            <router-view></router-view>
+                        </transition>
                     </div>
                 </div>
                 <div class="layout-copy">
@@ -226,5 +228,26 @@
     }
     .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active:hover{
         background: none !important;
+    }
+
+    .fade-enter-active,.fade-leave-active{
+        transition: transform .6s ease-out;
+    }
+    .fade-enter{
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    .fade-enter-to{
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .fade-leave{
+        transform: translateY(0);
+        opacity: 1;
+    }
+    .fade-leave-to{
+        transform: translateY(30px);
+        opacity: 0;
     }
 </style>

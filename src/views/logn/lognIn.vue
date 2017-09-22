@@ -75,7 +75,6 @@
                             formData.append('RANDOMVALIDATECODEKEY', this.random);
                         this.axios.post('/tenancy-sys/admin/index/loginIn?t='+ new Date().getTime(), formData)
                         .then(response => {
-                            console.log(response)
                             this.$Message.success(response.data.message);
                             if(response.data.code == '0000'){
                                 this.$local.save('innjia',{
@@ -83,7 +82,14 @@
                                     id: response.data.result.userId,
                                     token: response.data.result.token
                                 })
-                                this.$router.push('/innjia');
+
+                                //如果有query.redirect 就跳转到当前 否则就跳转到初始化页面
+                                let redUrl = this.$route.query.redirect;
+                                if(redUrl){
+                                    this.$router.push('/' + this.$route.query.redirect);
+                                } else{
+                                    this.$router.push('/innjia');
+                                }
                             }
                         })
                         .catch((response) => {
