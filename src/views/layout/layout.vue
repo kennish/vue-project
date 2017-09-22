@@ -1,3 +1,132 @@
+<template>
+    <div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
+        <Row type="flex">
+            <Col :span="spanLeft" class="layout-menu-left">
+              <Menu v-if="menuList != ''" theme="dark" width="auto" @on-select="activeLink" accordion>
+                <div class="layout-logo-left">
+                    <h3 class="layout-title">赢家生活金融平台</h3>
+                </div>
+                
+                <Submenu name="1">
+                    <template slot="title">
+                        <Icon type="ios-paper"></Icon>
+                        系统基础模块
+                    </template>
+                    <MenuItem :name="1-1">
+                        <router-link to="/innjia">菜单信息管理</router-link>
+                    </MenuItem>
+                    <MenuItem :name="1-2">
+                        <router-link to="/userProfile">用户信息管理</router-link>
+                    </MenuItem>
+                </Submenu>
+                <Submenu name="2">
+                    <template slot="title">
+                        <Icon type="ios-paper"></Icon>
+                        系统基础模块
+                    </template>
+                    <MenuItem :name="2-1">
+                        <router-link to="/hah">菜单方法管理</router-link>
+                    </MenuItem>
+                </Submenu>
+
+                <!-- <Submenu v-for="(item, index) in menuList" :key="index" :name="`${index + 1}`">
+                    <template slot="title">
+                        <Icon type="ios-paper"></Icon>
+                        {{item.menuVo.menuName}}
+                    </template>
+                    <MenuItem :name="`${index + 1}-${index2 + 1}`" v-for="(subItem, index2) in item.childList" :key="index2">
+                        <router-link to="/menuNode">{{subItem.menuVo.menuName}}</router-link>
+                    </MenuItem>
+                </Submenu> -->
+
+              </Menu>
+            </Col>
+            <Col :span="spanRight">
+                <div class="layout-header">
+                    <Row>
+                        <Col span="12">
+                            <Button type="text" @click="toggleClick">
+                                <Icon type="navicon" size="32"></Icon>
+                            </Button>
+                        </Col>
+                        <Col span="12" class="text-right">
+                            <Avatar style="background-color: #87d068" class="user-r" icon="person" />
+                            {{userName}}
+                            <Button class="lognout-btn" type="info" size="small" @click="logout">登出</Button>
+                        </Col>
+                    </Row>
+                </div>
+                <div class="layout-breadcrumb">
+                    <Breadcrumb>
+                        <BreadcrumbItem href="#">首页</BreadcrumbItem>
+                        <BreadcrumbItem href="#">应用中心</BreadcrumbItem>
+                        <BreadcrumbItem>某应用</BreadcrumbItem>
+                    </Breadcrumb>
+                </div>
+                <div class="layout-content">
+                    <div class="layout-content-main">
+                        <router-view></router-view>
+                    </div>
+                </div>
+                <div class="layout-copy">
+                    2011-2016 &copy; TalkingData
+                </div>
+            </Col>
+        </Row>
+    </div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+                spanLeft: 4,
+                spanRight: 20,
+                userName: '',
+                menuList: []
+            }
+        },
+         created () {
+            let info = this.$local.fetch("innjia");
+            this.userName = info.userName;
+
+            //请求左侧菜单列表
+            let formData = new FormData();
+                formData.append('userId', info.id);
+            this.axios.post('/tenancy-sys/admin/user/accessTree', formData)
+            .then(response => {
+                this.menuList = response.data.result
+            })
+            .catch((response) => {
+                console.log(response)
+            })
+            
+        },
+        computed: {
+            iconSize () {
+                return this.spanLeft === 4 ? 14 : 24;
+            }
+        },
+        methods: {
+            toggleClick () {
+                if (this.spanLeft === 4) {
+                    this.spanLeft = 2;
+                    this.spanRight = 22;
+                } else {
+                    this.spanLeft = 4;
+                    this.spanRight = 20;
+                }
+            },
+            logout () {
+                this.$local.save("innjia", null)
+                this.$Message.success("已退出,请重新登录");
+                this.$router.push("/login");
+            },
+            activeLink (name) {
+                console.log(name)
+            }
+        }
+    }
+</script>
 <style scoped>
     .layout{
         border: 1px solid #d7dde4;
@@ -53,93 +182,49 @@
     .ivu-col{
         transition: width .2s ease-in-out;
     }
-</style>
-<template>
-    <div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
-        <Row type="flex">
-            <Col :span="spanLeft" class="layout-menu-left">
-              <Menu active-name="1" theme="dark" width="auto" accordion>
-                <div class="layout-logo-left"></div>
-                <Submenu name="1">
-                    <template slot="title">
-                        <Icon type="ios-paper"></Icon>
-                        内容管理
-                    </template>
-                    <MenuItem name="1-1">文章管理</MenuItem>
-                    <MenuItem name="1-2">评论管理</MenuItem>
-                    <MenuItem name="1-3">举报管理</MenuItem>
-                </Submenu>
-                <Submenu name="2">
-                    <template slot="title">
-                        <Icon type="ios-people"></Icon>
-                        用户管理
-                    </template>
-                    <MenuItem name="2-1">新增用户</MenuItem>
-                    <MenuItem name="2-2">活跃用户</MenuItem>
-                </Submenu>
-                <Submenu name="3">
-                    <template slot="title">
-                        <Icon type="stats-bars"></Icon>
-                        统计分析
-                    </template>
-                    <MenuGroup title="使用">
-                        <MenuItem name="3-1">新增和启动</MenuItem>
-                        <MenuItem name="3-2">活跃分析</MenuItem>
-                        <MenuItem name="3-3">时段分析</MenuItem>
-                    </MenuGroup>
-                    <MenuGroup title="留存">
-                        <MenuItem name="3-4">用户留存</MenuItem>
-                        <MenuItem name="3-5">流失用户</MenuItem>
-                    </MenuGroup>
-                </Submenu>
-              </Menu>
-            </Col>
-            <Col :span="spanRight">
-                <div class="layout-header">
-                    <Button type="text" @click="toggleClick">
-                        <Icon type="navicon" size="32"></Icon>
-                    </Button>
-                </div>
-                <div class="layout-breadcrumb">
-                    <Breadcrumb>
-                        <BreadcrumbItem href="#">首页</BreadcrumbItem>
-                        <BreadcrumbItem href="#">应用中心</BreadcrumbItem>
-                        <BreadcrumbItem>某应用</BreadcrumbItem>
-                    </Breadcrumb>
-                </div>
-                <div class="layout-content">
-                    <div class="layout-content-main">内容区域</div>
-                </div>
-                <div class="layout-copy">
-                    2011-2016 &copy; TalkingData
-                </div>
-            </Col>
-        </Row>
-    </div>
-</template>
-<script>
-    export default {
-        data () {
-            return {
-                spanLeft: 4,
-                spanRight: 20
-            }
-        },
-        computed: {
-            iconSize () {
-                return this.spanLeft === 4 ? 14 : 24;
-            }
-        },
-        methods: {
-            toggleClick () {
-                if (this.spanLeft === 4) {
-                    this.spanLeft = 2;
-                    this.spanRight = 22;
-                } else {
-                    this.spanLeft = 4;
-                    this.spanRight = 20;
-                }
-            }
-        }
+    .layout-title{
+        font-size: 16px;
+        font-weight: normal;
+        text-align: center;
+        color: #ffffff;
+        height: 30px;
+        line-height: 30px;
     }
-</script>
+    .text-right{
+        text-align: right;
+        height: 47px;
+        line-height: 47px;
+        padding-right: 40px;
+        font-size: 16px;
+    }
+    .user-r{
+        vertical-align: middle;
+        margin-right: 5px;
+    }
+    .lognout-btn{
+        margin-left: 10px;
+    }
+    .ivu-menu-vertical .ivu-menu-item, .ivu-menu-vertical .ivu-menu-submenu-title{
+        padding: 0;
+    }
+    .ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item{
+        padding: 0;
+    }
+    .ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item a{
+        padding: 14px 24px 14px 43px;
+        display: block;
+        color: rgba(255,255,255,.7);
+    }
+    .ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item a:hover{
+        padding: 14px 24px 14px 43px;
+        display: block;
+        color: #ffffff;
+    }
+    .ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item a.is-active{
+        background: #2d8cf0!important;
+        color: #ffffff;
+    }
+    .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active:hover{
+        background: none !important;
+    }
+</style>

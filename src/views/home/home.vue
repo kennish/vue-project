@@ -1,16 +1,21 @@
 <template>
   <div class="home">
     <div class="logn-bar">
-      <router-link to="/login" class="home-bnt">
+      <router-link to="/login" class="home-bnt" v-if="!login">
         <Button type="primary" size="small">登录</Button>
       </router-link>
+      <span class="userBar" v-if="login">
+        <Icon type="person"></Icon>
+        {{userName}}
+      </span>
+      <Button type="info" size="small" v-if="login" @click="logout">登出</Button>
     </div>
     <div class="home-wrap">
       <div class="home-wrap-t">
         <h2>欢迎来到赢家生活金融平台</h2>
         <div class="home-bnt-bar">
-          <router-link to="/" class="home-bnt">
-            <Button type="primary" size="large">进入后台1</Button>
+          <router-link to="/innjia" class="home-bnt">
+            <Button type="info" size="large">进入后台</Button>
           </router-link>
         </div>
       </div>
@@ -20,10 +25,24 @@
 
 <script>
 export default {
-  name: 'hello',
   data () {
     return {
-      
+      login: false,
+      userName: ""
+    }
+  },
+  created () {
+    let info = this.$local.fetch('innjia');
+    if(info.token != undefined){
+      this.login = true
+      this.userName = info.userName
+    }
+  },
+  methods: {
+    logout () {
+      this.$local.save("innjia", null)
+      let info = this.$local.fetch('innjia');
+      this.login = info.token
     }
   }
 }
@@ -34,7 +53,6 @@ export default {
 h1, h2 {
   font-weight: normal;
 }
-
 .home{
   height: 100%;
   display: flex;
@@ -64,6 +82,10 @@ h1, h2 {
   margin-top: 15px;
   text-align: center;
 }
-.home-bnt{}
-
+.userBar{
+  margin-right: 20px;
+  line-height: 24px;
+  font-size: 16px;
+  color: #666666;
+}
 </style>
