@@ -17,9 +17,7 @@ html,body{
   height: 100%;
 }
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: '微软雅黑';
   color: #2c3e50;
   height: 100%;
   background: #f1f1f1;

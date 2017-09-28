@@ -1,10 +1,10 @@
 <template>
-    <div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
+    <div class="layout" :class="{'layout-hide-text': spanLeft < 4}">
         <Row type="flex">
             <Col :span="spanLeft" class="layout-menu-left">
               <Menu v-if="menuList != ''" theme="dark" width="auto" @on-select="activeLink" accordion>
                 <div class="layout-logo-left">
-                    <h3 class="layout-title">赢家生活金融平台</h3>
+                    <h3 class="layout-title">盈家生活金融平台</h3>
                 </div>
                 
                 <Submenu name="1">
@@ -58,9 +58,8 @@
                 </div>
                 <div class="layout-breadcrumb">
                     <Breadcrumb>
-                        <BreadcrumbItem href="#">首页</BreadcrumbItem>
-                        <BreadcrumbItem href="#">应用中心</BreadcrumbItem>
-                        <BreadcrumbItem>某应用</BreadcrumbItem>
+                        <BreadcrumbItem href="/">首页</BreadcrumbItem>
+                        <BreadcrumbItem>{{addBreadcrumb.meta.title}}</BreadcrumbItem>
                     </Breadcrumb>
                 </div>
                 <div class="layout-content">
@@ -84,12 +83,13 @@
                 spanLeft: 4,
                 spanRight: 20,
                 userName: '',
-                menuList: []
+                menuList: [],
+                addBreadcrumb: null
             }
         },
         watch:{
             $route(){
-                console.log(this.$route)
+                this.addBreadcrumb = this.$route;
             }
         },
         created () {
@@ -107,6 +107,7 @@
                 console.log(response)
             })
             console.log(this.$route)
+            this.addBreadcrumb = this.$route;
         },
         computed: {
             iconSize () {
