@@ -1,7 +1,7 @@
 <template>
 <div>
       <Row>
-          <Col span="12">
+          <Col span="8">
             <div class="handle-bar">
                 <Button type="primary" size="small" @click="modal1 = true"><Icon type="plus-round"></Icon> 新建</Button>
                 <Button type="warning" size="small" @click="edit('')"><Icon type="edit"></Icon> 编辑</Button>
@@ -21,11 +21,14 @@
                 </Dropdown>
             </div>
           </Col>
-          <Col span="12">
+          <Col span="16">
             <div class="query-bar">
-                <Input style="width: auto" v-model="query.menuName" size="small" placeholder="姓名"></Input>
-                    <Select size="small" placeholder="请选择" style="width: 146px; text-align: left;" clearable>
-                        <Option value="1">123456</Option>
+                <Input style="width: auto" v-model="query.userName" size="small" placeholder="姓名"></Input>
+                <Input style="width: auto" v-model="query.phone" size="small" placeholder="手机"></Input>
+                    <Select size="small" v-model="query.status" placeholder="请选择状态" style="width: 146px; text-align: left;" clearable>
+                        <Option value="AVAILABLE">可用</Option>
+                        <Option value="FORBID">禁止</Option>
+                        <Option value="DELETE">删除</Option>
                     </Select>
                 <Button type="success" size="small" @click="getDatas"><Icon type="search"></Icon> 查询</Button>
                 <Button size="small" @click="queryShow = true"><Icon type="gear-a"></Icon> 高级查询</Button>
@@ -34,7 +37,7 @@
       </Row>
     <div class="tab-main" ref="tab">
       <Spin size="large" fix v-if="loading"></Spin>
-      <Table :columns="columns" :data="data" :height="tabHeight" :row-class-name="rowClassName" @on-selection-change="rowdatas" size="small" ref="table"></Table>
+      <Table :columns="columns" :data="data" :height="tabHeight" :row-class-name="rowClassName" @on-selection-change="rowdatas" size="small" ref="table" stripe></Table>
     </div>
     <div class="pager-bar">
       <Page v-if="pager" :total="pager.recordCount" show-sizer @on-change="changePage" @on-page-size-change="getPageSize" placement="top"></Page>
@@ -68,8 +71,8 @@
 </template>
 <script>
 import qs from 'qs'
-import addModal from '@/modal/menuNode/add'
-import editModal from '@/modal/menuNode/edit'
+import addModal from '@/modal/userProfile/add'
+import editModal from '@/modal/userProfile/edit'
 import advancedQuery from '@/components/advancedQuery'
 export default {
     components: {
@@ -87,11 +90,12 @@ export default {
             pager: null,
             rowData: [], // 存储复选框选中的数据
             queryShow: false, // 控制高级查询弹出窗
-            upMenuList: null,  //存储所属菜单
+            upMenuLists: null,  //存储所属菜单
             // 查询条件
             query: {
-                menuName: '',
-                status: 'AVAILABLE',
+                userName: '',
+                phone: '',
+                status: '',
                 page: 1,
                 rows: 10,
                 order: 'asc',
@@ -101,99 +105,121 @@ export default {
                 {
                     type: 'selection',
                     width: 60,
-                    align: 'center',
-                    fixed: 'left'
+                    align: 'center'
                 },
                 {
-                    "title": "菜单名称",
+                    "title": "姓名",
                     "width": 150,
-                    "key": "menuName",
-                    "fixed": 'left'
+                    "key": "userName"
                 },
                 {
-                    "title": "菜单等级",
-                    "width": 150,
-                    "key": "level",
-                    "sortable": true,
-                    render: (h, {row}) => {
-                        if (row.level == 0) {
-                            return "一级菜单"
-                        } else if (row.level == 1) {
-                            return "二级菜单"
-                        }
-                    }
+                    "title": "登录账号",
+                    "key": "loginName"
                 },
                 {
-                    "title": "所属菜单",
-                    "width": 150,
-                    "key": "upMenuName",
-                    "sortable": true
+                    "title": "手机",
+                    "key": "mobile"
                 },
                 {
-                    "title": "跳转路径",
-                    "width": 290,
-                    "key": "menuPath",
-                    "sortable": true,
+                    "title": "邮箱",
+                    "key": "email",
                     "ellipsis": "true"
                 },
                 {
-                    "title": "排序",
-                    "width": 150,
-                    "key": "sort",
+                    "title": "工号",
+                    "key": "jobNumber",
                     "sortable": true
                 },
                 {
-                    "title": "菜单类型",
-                    "width": 120,
-                    "key": "menuType",
+                    "title": "用户状态",
                     "sortable": true,
-                    render: (h, {row}) => {
-                        if (row.menuType == "INTERNAL") {
-                            return "内部"
-                        } else {
-                            return "外部"
-                        }
-                    }
-                },
-                {
-                    "title": "菜单状态",
-                    "width": 120,
                     "key": "status",
-                    "sortable": true,
                     render: (h, {row}) => {
                         if (row.status == "AVAILABLE") {
-                            return "可用"
+                            return h('span',{
+                                props: {
+                                    
+                                },
+                                style: {
+                                    color: '#19be6b'
+                                }
+                            }, '可用')
+                        } else if (row.status == "FORBID") {
+                            return h('span',{
+                                props: {
+                                    
+                                },
+                                style: {
+                                    color: '#f90'
+                                }
+                            }, '禁止')
+                        } else if (row.status == "DELETE") {
+                            return h('span',{
+                                props: {
+                                    
+                                },
+                                style: {
+                                    color: '#ed3f14'
+                                }
+                            }, '删除')
                         }
                     }
                 },
                 {
                     "title": "创建时间",
-                    "width": 290,
                     "key": "createTime",
-                    "sortable": true
+                    "sortable": true,
+                    "ellipsis": "true"
                 },
                 {
                     "title": "操作",
-                    "width": 60,
+                    "width": 200,
                     "key": "",
                     "fixed": 'right',
-                    "sortable": true,
                     render: (h, params) => {
                         return h('div', [
                             h('Button', {
-                            props: {
-                                type: 'primary',
-                                size: 'small'
-                            },
-                            style: {
-                                marginRight: '5px'
-                            },
-                            on: {
-                                click: () => {
-                                    this.edit(params)
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.edit(params)
+                                    }
                                 }
-                            }
-                            }, '编辑')
+                            }, '编辑'),
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.edit(params)
+                                    }
+                                }
+                            }, '权限'),
+                            h('Button', {
+                                props: {
+                                    type: 'warning',
+                                    size: 'small'
+                                },
+                                style: {
+
+                                },
+                                on: {
+                                    click: () => {
+                                        this.edit(params)
+                                    }
+                                }
+                            }, '重置密码')
                         ]);
                     }
                     
@@ -203,6 +229,15 @@ export default {
     },
     created () {
         this.getDatas();
+    },
+    computed: {
+        upMenus () {
+            if(this.upMenuLists){
+                return this.upMenuLists.filter((item) => {
+                    return item.level == 0
+                })
+            }
+        }
     },
     methods: {
         rowClassName (row, index) {
@@ -239,7 +274,7 @@ export default {
         // 获取数据
         getDatas () {
             this.loading = !this.loading;
-            this.axios.post('/tenancy-sys/admin/menu/list',qs.stringify(this.query))
+            this.axios.post('/tenancy-sys/admin/user/list',qs.stringify(this.query))
             .then(response => {
                 if (response.data.code == '0000') {
                     this.data = response.data.result;
@@ -353,7 +388,7 @@ export default {
 .demo-table-info-row td{
     background-color: #ebf7ff;
 }
-table {width: 100% !important}
+
 .ivu-table-fixed-body{
     /* 不加当有横向滚动条的时候样式有bug */
     padding-bottom: 16px;

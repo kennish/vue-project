@@ -131,7 +131,7 @@ export default {
                 },
                 {
                     "title": "跳转路径",
-                    "width": 290,
+                    "width": 430,
                     "key": "menuPath",
                     "sortable": true,
                     "ellipsis": "true"
@@ -168,6 +168,7 @@ export default {
                 },
                 {
                     "title": "创建时间",
+                    "width": 300,
                     "key": "createTime",
                     "sortable": true,
                     "ellipsis": "true"
