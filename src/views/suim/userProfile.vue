@@ -216,7 +216,7 @@ export default {
                                 },
                                 on: {
                                     click: () => {
-                                        this.edit(params)
+                                        this.resetPSW(params)
                                     }
                                 }
                             }, '重置密码')
@@ -320,7 +320,7 @@ export default {
                     content: '<p>您确定要删除选中项吗</p>',
                     loading: true,
                     onOk: () => {
-                        this.axios.post('/tenancy-sys/admin/menu/delete', qs.stringify({'ids': ids}))
+                        this.axios.post('/tenancy-sys/admin/user/batchDelete', qs.stringify({'ids': ids}))
                         .then((response) => {
                             if(response.data.code == '0000'){
                                 this.$Modal.remove();
@@ -338,6 +338,31 @@ export default {
                 });
 
             }
+        },
+        //重置密码
+        resetPSW (params) {
+
+            this.$Modal.confirm({
+                title: '警告',
+                content: '<p>重置后密码为123456，您确定要这么做吗</p>',
+                loading: true,
+                onOk: () => {
+                    this.axios.post('/tenancy-sys/admin/user/reset/password', qs.stringify({'userId': params.row.id}))
+                    .then((response) => {
+                        if(response.data.code == '0000'){
+                            this.$Modal.remove();
+                        }
+                        this.$Message.success(response.data.message);
+                    })
+                    .catch((error) => {
+                        this.$Message.error('删除失败!');
+                    })
+                },
+                onCancel: () => {
+                    // this.$Message.info('点击了取消');
+                }
+            });
+
         }
     }
 }
