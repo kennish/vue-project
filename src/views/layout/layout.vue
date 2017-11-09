@@ -61,7 +61,6 @@ import layoutMenu from './menu'
         created () {
             let info = this.$local.fetch("innjia");
             this.userName = info.userName;
-            console.log(this.$route)
             this.addBreadcrumb = this.$route;
         },
         computed: {

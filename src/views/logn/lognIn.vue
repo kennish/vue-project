@@ -28,6 +28,7 @@
 </template>
 <script>
     import apiUrl from '@/settings/sys'
+    import qs from 'qs'
     export default {
         data () {
             return {
@@ -67,13 +68,7 @@
                 event.preventDefault();
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-
-                        let formData = new FormData();
-                            formData.append('loginName', this.formInline.loginName);
-                            formData.append('loginPwd', this.formInline.loginPwd);
-                            formData.append('imgCode', this.formInline.imgCode);
-                            formData.append('RANDOMVALIDATECODEKEY', this.random);
-                        this.axios.post('/tenancy-sys/admin/index/loginIn?t='+ new Date().getTime(), formData)
+                        this.axios.post('/tenancy-sys/admin/index/loginIn?t='+ new Date().getTime(), qs.stringify(this.formInline))
                         .then(response => {
                             this.$Message.success(response.data.message);
                             if(response.data.code == '0000'){

@@ -15,6 +15,15 @@
         <MenuItem name="1-2">
             <router-link to="/userProfile">用户信息管理</router-link>
         </MenuItem>
+        <MenuItem name="1-3">
+            <router-link to="/roleInfo">角色信息管理</router-link>
+        </MenuItem>
+        <MenuItem name="1-4">
+            <router-link to="/parameters">系统参数管理</router-link>
+        </MenuItem>
+        <MenuItem name="1-5">
+            <router-link to="/menuMethod">菜单方法管理</router-link>
+        </MenuItem>
     </Submenu>
     <Submenu name="2">
         <template slot="title">
@@ -100,7 +109,7 @@ export default {
     /* padding: 0; */
 }
 .ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item{
-    padding: 0;
+    padding: 0 !important;
 }
 .ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item a{
     padding: 14px 24px 14px 43px;

@@ -8,8 +8,16 @@
       <FormItem label="菜单名称" prop="menuName">
         <Input type="text" v-model="addMenuForm.menuName" placeholder="请输入菜单名称"></Input>
       </FormItem>
-      <FormItem label="菜单图标" prop="menuIconCss">
+      <!-- <FormItem label="菜单图标" prop="menuIconCss">
         <Input type="text" v-model="addMenuForm.menuIconCss" placeholder="请输入菜单图标"></Input>
+      </FormItem> -->
+      <FormItem label="菜单图标" prop="menuIconCss">
+        <Input type="text" style="width:162px" v-model="addMenuForm.menuIconCss" placeholder="请输入菜单图标">
+          <Button slot="append" icon="ios-keypad-outline" @click="iconHide">
+            <icon-select :show="iconShow" @getType="getType" @hide="iconHide"></icon-select>
+          </Button>
+          
+        </Input>
       </FormItem>
       <FormItem label="排序字符" prop="sort">
         <Input type="text" v-model="addMenuForm.sort" placeholder="请输入排序字符"></Input>
@@ -41,10 +49,13 @@
 
 <script>
 import qs from 'qs'
+import iconSelect from '@/components/iconSelector/iconSelector'
 export default {
+  components: {iconSelect},
   props: ['show'],
   data () {
     return {
+      iconShow: false,
       mymodal: true,
       modalLoading: false, // 新建确定的loading
       upMenuList: null,
@@ -122,6 +133,14 @@ export default {
               this.$Message.error('表单验证失败!');
           }
       })
+    },
+    //获取icon样式
+    getType (t) {
+      this.addMenuForm.menuIconCss = t;
+    },
+    //隐藏icon选择器
+    iconHide () {
+      this.iconShow = !this.iconShow;
     },
     del () {
       this.$emit('reset')

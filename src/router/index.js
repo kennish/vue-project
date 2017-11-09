@@ -7,6 +7,10 @@ import Layout from '@/views/layout/layout'
 
 import MenuNode from '@/views/suim/menuNode'
 import UserProfile from '@/views/suim/userProfile'
+import RoleInfo from '@/views/suim/roleInfo'
+
+import Parameters from '@/views/suim/parameters'
+import menuMethod from '@/views/suim/menuMethod'
 
 Vue.use(VueRouter)
 
@@ -32,7 +36,6 @@ const router = new VueRouter({
     },
     {
       path: '/innjia',
-      name: 'Innjia',
       component: Layout,
       meta: {
         title: '大金融后台',
@@ -42,6 +45,7 @@ const router = new VueRouter({
         {
           path: '',
           component: MenuNode,
+          name: 'MenuNode',
           meta: {
             title: '菜单信息管理'
           }
@@ -52,6 +56,30 @@ const router = new VueRouter({
           component: UserProfile,
           meta: {
             title: '用户信息管理'
+          }
+        },
+        {
+          path: '/roleInfo',
+          name: 'RoleInfo',
+          component: RoleInfo,
+          meta: {
+            title: '角色信息管理'
+          }
+        },
+        {
+          path: '/parameters',
+          name: 'Parameters',
+          component: Parameters,
+          meta: {
+            title: '系统参数管理'
+          }
+        },
+        {
+          path: '/menuMethod',
+          name: 'MenuMethod',
+          component: menuMethod,
+          meta: {
+            title: '菜单方法管理'
           }
         }
       ]
